@@ -1,3 +1,15 @@
+# Node modules folder
+node_modules/
+
+# Local development database
+db.sqlite3
+
+# Backup or large data files (if not necessary)
+backup.json
+
+# Environment variables
+.env
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
