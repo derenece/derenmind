@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>DerenMind - {{ request.user }}'s Note: {{ note.title }}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <script src="http://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+            function enableEdit() {
+            document.getElementById('note-view').style.display = 'none';
+            document.getElementById('edit-form').style.display = 'block';
+        }
+
+        function cancelEdit() {
+            document.getElementById('note-view').style.display = 'block';
+            document.getElementById('edit-form').style.display = 'none';
+        }
+
+        function submitEdit(event) {
+            event.preventDefault(); // Prevent default form submission
+            console.log('Submit button clicked!') //Debugging line
+
+            const noteId = "{{ note.id }}";
+            const title = document.getElementById('edit-title').value;
+            const category = document.getElementById('edit-category').value;
+            const subject = document.getElementById('edit-subject').value;
+            const text = document.getElementById('edit-text').value;
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('category', category);
+            formData.append('subject', subject);
+            formData.append('text', text);
+            formData.append('csrfmiddlewaretoken', csrfToken);
+
+            console.log("Submitting the following data:", { title, category, subject, text }); // Debugging line
+
+            axios.post(`/notes/${noteId}/edit/`, formData)
+        .then(response => {
+            if (response.data.success) {
+                // Update the displayed note with the new data
+                document.getElementById('note-title').innerText = response.data.note.title;
+                document.getElementById('note-category').innerText = `Category: ${response.data.note.category}`;
+                document.getElementById('note-subject').innerText = `Subject: ${response.data.note.subject}`;
+                document.getElementById('note-text').innerText = response.data.note.text;
+
+                // Switch back to view mode
+                cancelEdit();
+            } else {
+                alert('Error: ' + response.data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+}
+        </script>
+    </head>
+    <body>
+        <style>
+            #hello-msg {
+                font-size: 18px;
+                color: #fff;
+                margin-right: 20px;
+            }
+        </style>
+        <nav class="py-6 px-8 flex items-center justify-between bg-lime-200">
+            <div class="container mx-auto flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl text-gray-950">DerenMind</h1>
+                </div>
+                <span id="hello-msg">Hello, {{ request.user }}!</span>
+                <ul class="flex space-x-8">
+                    <li>
+                        <a href="{% url 'notes' %}" class="text-lg text-gray-800 hover:text-gray-600">My Notes</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}" class="text-lg text-gray-800 hover:text-gray-600">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+
+        <main class="py-6 px-8">
+            <div class="container mx-auto p-8">
+                <h1 id="note-title" class="text-3xl font-bold mb-6">{{ note.title }}</h1>
+                <p class="text-gray-600 mb-4">Created on: {{ note.date_created|date:"F j, Y, g:i a" }}</p>
+                <div class="bg-white p-6 rounded shadow">
+                    <h2 id="note-category" class="text-xl font-bold">Category: {{ note.category }}</h2>
+                    <p id="note-subject" class="text-gray-600 mt-4">Subject: {{ note.subject }}</p>
+                    <p id="note-text" class="mt-6">{{ note.text }}</p>
+                </div>
+            </div>
+            <div class="flex justify-center items-center space-x-4 mt-4">
+                
+                
+                
+                <div id="note-view">
+                    <h2 id="note-title">{{ note.title }}</h2>
+                    <p id="note-category">Category: {{ note.category }}</p>
+                    <p id="note-subject">Subject: {{ note.subject }}</p>
+                    <p id="note-text">{{ note.text }}</p>
+                    <div>
+                    <button  class="py-4 px-8 bg-slate-200 text-slate-950 inline-block" onclick="enableEdit()">Edit</button>
+                    <a href="#" class="py-4 px-8 bg-slate-200 text-slate-950 inline-block">Mark as Done</a>
+                    <form id="edit-form" style="display: none;" onsubmit="submitEdit(event)">
+                        {% csrf_token %}
+                        <input type="text" id="edit-title" value="{{ note.title }}" required>
+                        <input type="text" id="edit-category" value="{{ note.category }}" required>
+                        <input type="text" id="edit-subject" value="{{ note.subject }}" required>
+                        <textarea name="text" id="edit-text" required>{{ note.text }}</textarea>
+                        <button type="submit">Save</button>
+                        <button type="button" onclick="cancelEdit()">Cancel</button>
+                    </form>
+                </div>
+                </div>
+                
+                <form action="{% url 'delete_note' note.id %}" method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="py-4 px-8 bg-slate-200 text-slate-950 inline-block">Delete</button>
+                </form>
+            </div>    
+        </main>
+        
+        <footer class="py-8 px-8 bg-lime-200 text-center">
+            <p class="text-gray-950">Copyright (c) 2024 - Deren Ece</p>
+        </footer>
+    </body>
+</html>

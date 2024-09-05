@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lan="en">
+    <head>
+        <title>DerenMind - {{request.user}}'s Notebook</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="http://cdn.tailwindcss.com"></script>
+        
+        <style>
+            .search-container{
+                margin: 20px auto;
+                display: flex;
+                justify-content: center;
+            }
+            .search-input{
+                padding: 10px;
+                font-size:16px;
+                border:1px solid #ccc;
+                border-radius: 4px;
+                width: 300px;
+            }
+            .search-button{
+                padding: 10px;
+                margin-left: 10px;
+                font-size: 16px;
+                border: none;
+                background-color: #afa24c;
+                color: white;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            .search-button:hover{
+                background-color: #a06e45;
+            }
+
+        </style>
+    </head>
+    <body>
+        <style>
+            #hello-msg{
+                font-size: 18px;
+                color:#ffffff;
+                margin-right:20px;
+
+            }
+        </style>
+  <nav class="py-6 px-8 flex items-center justify-between bg-lime-200">
+    <div class="container mx-auto flex justify-between items-center">
+            
+        <div>
+            <h1 class="text-2xl text-gray-950">DerenMind</h1>
+        </div>
+        <span class="hello-msg">Hello, {{ request.user }}!</span>
+
+        <ul class="flex space-x-8">
+            <li>
+                <a href="{% url 'notes' %}" class="text-lg text-gray-800 hover:text-gray-600">Refresh</a>
+            </li>
+            <li>
+                <a href="{% url 'home' %}" class="text-lg text-gray-800 hover:text-gray-600">Home</a>
+            </li>
+            <li>
+                <a href="{% url 'logout' %}" class="text-lg text-gray-800 hover:text-gray-600">Logout</a>
+            </li>
+        </ul>
+
+    </div>
+</nav>
+            
+        <div class="search-container">
+           
+                <form method="GET" action="{% url 'notes' %}">
+                    <input type="text" name="query" class="search-input" placeholder="Search notes...">
+                    <button type="submit" class="search-button">Search</button>
+                </form>
+        </div>
+            <main class="py-6 px-8">
+            <h1 class="mb-6 text-2xl" data-tippy-content="This is a tooltip!">My Notes</h1>
+
+
+
+            <div class="mt-6 gird grid-cols-4 gap-4">
+                <ul>
+                    {% for note in notes %}
+                        {% if note.id %}
+                            <li class="mb-4 py-6 px-6 bg-slate-200">
+                                <a href="{% url 'note_detail' note.id %}" class="text-rose-600 hover:underline text-lg">
+                                    {{ note.title }}
+                                </a>
+                                <p class="text-sm text-slate-600"><strong>Summary: </strong>{{ note.summary }}</p>
+                                <p class="text-sm text-slate-700"><strong>Created on: </strong>{{ note.date_created|date:"F j, Y, g:i a" }}</p>
+                                {% if note.score %}
+                                    <p class="text-sm text-slate-600">Score:{{note.score}}</p>
+                                {% endif %}    
+                            </li>
+                        {% else %}    
+                            <li class="text-red-500">Note is missing a valid ID.</li>
+                        {% endif %}
+                    {% empty %}
+                            <p>No notes found.</p>   
+                    {% endfor %}
+                </ul>
+            </div>
+
+            </main>
+            <footer class="py-8 px-8 bg-lime-200 text-center">
+                <p class="text-gray-950"> Copyright (c) 2024 - Deren Ece </p>
+            </footer>
+    </body>
+</html>

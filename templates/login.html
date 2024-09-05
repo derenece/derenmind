@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lan="en">
+    <head>
+        <title>DerenMind - Log In</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="http://cdn.tailwindcss.com"></script>
+    </head>
+    <body>
+        <nav class="py-6 px-8 flex items-center justify-between bg-lime-200">
+            <div class="container mx-auto flex justify-between items-center">
+                    
+                <div>
+                    <h1 class="text-2xl text-gray-950">DerenMind</h1>
+                </div>
+
+                <ul class="flex space-x-8">
+                    <li>
+                        <a href="{% url 'frontpage' %}" class="text-lg text-gray-800 hover:text-gray-600">Welcome</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'about' %}" class="text-lg text-gray-800 hover:text-gray-600">About</a>
+                    </li>
+                </ul>
+
+            </div>
+        </nav>
+
+        <main class="py-6 px-8">
+                <div class="max-w-xl py-8 mx-auto bg-slate-800 text-center">
+                <h1 class="text-2xl text-white">Log In</h1>
+                            <form class="px-8 mt-6 space-y-4" action="{% url 'login' %}" method="post">
+                                {% csrf_token %}
+                                <div>
+                                    <label class="text-white" for="">
+                                        Username
+                                    </label><br>
+                                    <input name='username' type="text" placeholder="Username..." class="w-full py-4 px-6 bg-slate-500 text-white" required >
+                                </div>
+                                <div>
+                                    <label class="text-white">
+                                        Password
+                                    </label><br>
+                                    <input name='password' placeholder="Password..." type="password" class="w-full py-4 px-6 bg-slate-500 text-white" required>
+                                </div>
+                                <div>
+                                    <button class="py-4 px-8 bg-slate-600 text-white">
+                                        Log In
+                                    </button>
+                                </div>
+                                <br>
+                            </form>
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <p class="text-red-600" id="messages">{{message}}</p>
+                                {% endfor %}
+                            {% endif %}    
+
+                            <div class="mt-4">
+                                <div class="d-flex justify-content-center links">
+                                    <p class="text-white">Don't have an account? <a href="{% url 'signup' %}" class="ml-2 text-blue-500 hover:text-blue-700 underline">Sign Up</a></p>
+                                </div>
+                            </div>
+                </div>
+        </main>
+        <footer class="py-8 px-8 bg-lime-200 text-center">
+                <p class="text-gray-950"> Copyright (c) 2024 - Deren Ece </p>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lan="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="http://cdn.tailwindcss.com"></script>
+        <script>
+            function toggleForm(){
+                // Sets the visibility of the note creation form
+                document.getElementById('noteForm').classList.toggle("hidden");
+            }
+        </script>
+        <!-- Include Shepherd.js -->
+        <link rel="stylesheet" href="https://unpkg.com/shepherd.js@8.4.0/dist/css/shepherd.css" />
+        <script src="https://unpkg.com/shepherd.js@8.4.0/dist/js/shepherd.min.js"></script>
+
+
+
+
+    </head>
+    <body>
+        <style>
+            #hello-msg{
+                font-size: 18px;
+                color:#fff;
+                margin-right:20px;
+
+            }
+        </style>
+        <nav class="py-6 px-8 flex items-center justify-between bg-lime-200">
+                <div class="container mx-auto flex justify-between items-center">
+                        
+                    <div>
+                        <h1 class="text-2xl text-gray-950">DerenMind</h1>
+                    </div>
+                    <span class="hello-msg">Hello, {{ request.user }}!</span>
+
+                    <ul class="flex space-x-8">
+                        <li>
+                            <a href="{% url 'notes' %}" class="text-lg text-gray-800 hover:text-gray-600">My Notes</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'logout' %}" class="text-lg text-gray-800 hover:text-gray-600">Logout</a>
+                        </li>
+                    </ul>
+   
+                </div>
+        </nav>
+
+        <div class="container mx-auto p-8 space-x-4">
+
+            <button onclick="toggleForm()" class="bg-orange-200 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded mb-4">
+                Add Note
+            </button>
+
+            <div id="noteForm" class="hidden bg-white p-6 rounded shadow-md">
+
+                <form method="post" action="{% url 'home' %}">
+
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-bold mb-2" for="category">Category:</label>
+                        <input type="text" name="category" class="form-input mt-1 block w-full" placeholder="Enter note category..." required>
+                       
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-bold mb-2" for="subject">Subject:</label>
+                        <input type="text" name="subject" class="form-input mt-1 block w-full" placeholder="Enter note subject..." required>
+                        
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-bold mb-2" for="title">Title:</label>
+                        <input type="text" name="title" class="form-input mt-1 block w-full" placeholder="Enter note title..." required>
+                        
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-bold mb-2" for="text">Text:>
+                        <textarea name="text" class="form-textarea mt-1 block w-full" rows="10" placeholder="Enter your note content..." required></textarea>
+                        
+                    </div>
+
+                    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                        Save
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="container mx-auto"></div>
+            {% for recommendation in recommendations %}
+            <h3 class="text-2xl font-semibold text-center">Personalized Recommendations</h3><br>
+            <div class="bg-orange-50 shadow-lg rounded-lg p-6 mb-8 border border-gray-200">
+                <h4 class="text-xl font-semibold text-rose-600 border-b-2 border-rose-600 pb-2 mb-4">Content-Based Recommendations</h4>
+                {% if recommendation.content_based %}
+                    <ul class=" list-inside space-y-2">
+                        {% for item in recommendation.content_based %}
+                            <li class="text-gray-700">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No content-based recommendations available.</p>
+                {% endif %}
+                <br>
+
+                <h4 class="text-xl font-semibold text-rose-600 border-b-2 border-rose-600 pb-2 mb-4">Actionable Insights</h4>
+                {% if recommendation.actionable_insights %}
+                    <ul class=" list-inside space-y-2">
+                        {% for item in recommendation.actionable_insights %}
+                            <li class="text-gray-700">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No actionable insights available.</p>
+                {% endif %}
+                <br>
+
+                <h4 class="text-xl font-semibold text-rose-600 border-b-2 border-rose-600 pb-2 mb-4">Reminders</h4>
+                {% if recommendation.reminders %}
+                    <ul class=" list-inside space-y-2">
+                        {% for item in recommendation.reminders %}
+                            <li class="text-gray-700">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No reminders available.</p>
+                {% endif %}
+                <br>
+            
+                <h4 class="text-xl font-semibold text-rose-600 border-b-2 border-rose-600 pb-2 mb-4">Tag Suggestions</h4>
+                {% if recommendation.tag_suggestions %}
+                    <ul class=" list-inside space-y-2">
+                        {% for item in recommendation.tag_suggestions %}
+                            <li class="text-gray-700">{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No tag suggestions available.</p>
+                {% endif %}
+                <br>
+            </div>    
+            {% endfor %}
+        </div>
+    
+    
+        <!-- You can add more sections as needed -->
+    </main>
+
+        
+        <footer class="py-8 px-8 bg-lime-200 text-center">
+            <p class="text-gray-950"> Copyright (c) 2024 - Deren Ece </p>
+        </footer>
+    </body>
+</html>
